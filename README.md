@@ -95,7 +95,6 @@ python3 ./ColorSwap.py
  
 ## 作者
 [@tkyswd](https://www.instagram.com/tkyswd/)
-[@ryotteyonde](https://twitter.com/ryotteyonde)
 
 ## ライセンス
  
