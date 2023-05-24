@@ -1,5 +1,5 @@
 # ColorSwap
-赤外線写真(.JPG)のカラースワップ(LABカラースワップ)を行うプログラム(MakeColorSwappedPicture.py)です。
+赤外線写真(.JPG)、赤外線動画(.mp4,.m2ts)をカラースワップ(LABカラースワップ)を行うプログラムです。
  
 ## 簡単な説明
 
