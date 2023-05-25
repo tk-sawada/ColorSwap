@@ -39,43 +39,45 @@ def process_frame(img):
 
     return img_rgb_eq
 
+
 def convert_to_cfr(input_file_path, output_file_path, fps):
     command = ['ffmpeg', '-i', input_file_path, '-vsync', 'cfr', '-r', str(fps), output_file_path]
     subprocess.run(command, check=True)
 
-root = tkinter.Tk()
-root.withdraw()
+def main():
+    root = tkinter.Tk()
+    root.withdraw()
 
-try:
-    input_file_path = filedialog.askopenfilename(filetypes=[("MP4 files", "*.mp4"), ("M2TS files", "*.m2ts"), ("MTS files", "*.MTS")])
-    
-    cfr_file_path = os.path.splitext(input_file_path)[0] + "_cfr.mp4"
-    clip = VideoFileClip(input_file_path)
-    convert_to_cfr(input_file_path, cfr_file_path, clip.fps)
+    try:
+        input_file_path = filedialog.askopenfilename(filetypes=[ ("MTS files", "*.MTS"), ("M2TS files", "*.m2ts"), ("MP4 files", "*.mp4")])
 
-    clip_cfr = VideoFileClip(cfr_file_path)
-    audio = clip_cfr.audio
+        cfr_file_path = os.path.splitext(input_file_path)[0] + "_cfr.mp4"
+        clip = VideoFileClip(input_file_path)
+        convert_to_cfr(input_file_path, cfr_file_path, clip.fps)
 
-    processed_clip = clip_cfr.fl_image(process_frame)
+        clip_cfr = VideoFileClip(cfr_file_path)
+        audio = clip_cfr.audio
 
-    temp_output_file_path = os.path.splitext(input_file_path)[0] + "_processed_temp.mp4"
-    output_file_path = os.path.splitext(input_file_path)[0] + "_processed.mp4"
+        processed_clip = clip_cfr.fl_image(process_frame)
 
-    processed_clip.write_videofile(temp_output_file_path, fps=clip_cfr.fps) 
+        temp_output_file_path = os.path.splitext(input_file_path)[0] + "_processed_temp.mp4"
+        output_file_path = os.path.splitext(input_file_path)[0] + "_processed.mp4"
 
-    final_clip = VideoFileClip(temp_output_file_path)
-    final_clip = final_clip.set_audio(audio)
-    final_clip.write_videofile(output_file_path)
+        processed_clip.write_videofile(temp_output_file_path, fps=clip_cfr.fps) 
 
-    os.remove(temp_output_file_path)
-    os.remove(cfr_file_path)
+        final_clip = VideoFileClip(temp_output_file_path)
+        final_clip = final_clip.set_audio(audio)
+        final_clip.write_videofile(output_file_path)
 
-    messagebox.showinfo("Success", f"Processing completed. Output saved as {output_file_path}")
+        os.remove(temp_output_file_path)
+        os.remove(cfr_file_path)
 
-except Exception as e:
-    messagebox.showerror("Error", str(e))
+        messagebox.showinfo("Success", f"Processing completed. Output saved as {output_file_path}")
 
-root.destroy()  # Close the Tkinter window and exit the program
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
 
+    root.destroy()  # Close the Tkinter window and exit the program
 
-
+if __name__ == "__main__":
+    main()
