@@ -42,7 +42,7 @@ root = tkinter.Tk()
 root.withdraw()
 
 try:
-    input_file_path = filedialog.askopenfilename(filetypes=[("MP4 and M2TS files", "*.mp4;*.m2ts")])
+    input_file_path = filedialog.askopenfilename(filetypes=[("MP4 and M2TS files", "*.mp4;*.m2ts;*.MTS")])
 
     clip = VideoFileClip(input_file_path)
     audio = clip.audio
