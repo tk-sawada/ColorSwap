@@ -47,12 +47,13 @@ try:
     audio = clip.audio
 
     processed_clip = clip.fl_image(process_frame)
+    processed_clip.fps = clip.fps  # Preserve the original fps
 
     temp_output_file_path = os.path.splitext(input_file_path)[0] + "_processed_temp.mp4"
     output_file_path = os.path.splitext(input_file_path)[0] + "_processed.mp4"
 
     # ビデオクリップのみを一旦保存します
-    processed_clip.write_videofile(temp_output_file_path)
+    processed_clip.write_videofile(temp_output_file_path, fps=clip.fps)  # Apply the original fps here too
 
     # ビデオクリップを再度読み込み、音声を付加します
     final_clip = VideoFileClip(temp_output_file_path)
@@ -67,4 +68,4 @@ try:
 except Exception as e:
     messagebox.showerror("Error", str(e))
 
-root.mainloop()
+root.destroy()  # Close the Tkinter window and exit the program
