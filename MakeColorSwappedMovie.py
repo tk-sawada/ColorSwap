@@ -6,37 +6,7 @@ from tkinter import filedialog, ttk, Toplevel, Button, Label, messagebox, simple
 from moviepy.editor import VideoFileClip, AudioFileClip
 
 def process_frame(img):
-    # 画像をBGRからLABに変換
-    img_lab = cv2.cvtColor(img, cv2.COLOR_BGR2Lab)
-
-    # LAB色空間をチャネルごとに分割
-    l_channel, a_channel, b_channel = cv2.split(img_lab)
-
-    # AとBのチャネルを反転
-    a_channel_inv = cv2.bitwise_not(a_channel)
-    b_channel_inv = cv2.bitwise_not(b_channel)
-
-    # 反転したチャネルと元のLチャネルを合成
-    img_lab_inv = cv2.merge([l_channel, a_channel_inv, b_channel_inv])
-        
-    # LABからBGRに戻す
-    img_bgr_inv = cv2.cvtColor(img_lab_inv, cv2.COLOR_Lab2BGR)
-
-    # 画像をBGRからRGBに変換
-    img_rgb_inv = cv2.cvtColor(img_bgr_inv, cv2.COLOR_BGR2RGB)
-
-    # RGB色空間をチャネルごとに分割
-    r_channel, g_channel, b_channel = cv2.split(img_rgb_inv)
-
-    # RGB各色のチャネルに対してヒストグラム均等化を適用
-    r_eq = cv2.equalizeHist(r_channel)
-    g_eq = cv2.equalizeHist(g_channel)
-    b_eq = cv2.equalizeHist(b_channel)
-
-    # 均等化したチャネルを結合
-    img_rgb_eq = cv2.merge([r_eq, g_eq, b_eq])
-
-    return img_rgb_eq
+    # 画像処理のコード（省略）
 
 root = tkinter.Tk()
 root.withdraw()
@@ -46,14 +16,18 @@ try:
     clip = VideoFileClip(input_file_path)
     audio = clip.audio
 
+    # オリジナルの動画の音声の長さを取得
+    audio_duration = audio.duration
+
     processed_clip = clip.fl_image(process_frame)
-    processed_clip.fps = clip.fps  # Preserve the original fps
+    # 映像のフレームレートを調整して音声の長さに合わせる
+    new_fps = processed_clip.duration / audio_duration
 
     temp_output_file_path = os.path.splitext(input_file_path)[0] + "_processed_temp.mp4"
     output_file_path = os.path.splitext(input_file_path)[0] + "_processed.mp4"
 
     # ビデオクリップのみを一旦保存します
-    processed_clip.write_videofile(temp_output_file_path, fps=clip.fps)  # Apply the original fps here too
+    processed_clip.write_videofile(temp_output_file_path, fps=new_fps)  # Apply the new fps here
 
     # ビデオクリップを再度読み込み、音声を付加します
     final_clip = VideoFileClip(temp_output_file_path)
